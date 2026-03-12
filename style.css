@@ -1,0 +1,324 @@
+/* ─── Palette ─────────────────────────────────────────────────────── */
+:root {
+  --bg:          #faf7f6;
+  --bg-alt:      #f3eceb;
+  --burgundy:    #7a3040;
+  --burg-mid:    #a05060;
+  --burg-light:  #d4a5ad;
+  --burg-pale:   #ecdadc;
+  --burg-faint:  #f7f0f1;
+  --text:        #2e1f22;
+  --text-mid:    #6b4a50;
+  --text-light:  #9e7a80;
+  --border:      #e2cfd1;
+  --white:       #ffffff;
+}
+
+/* ─── Reset & Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.75;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--burgundy);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* ─── Nav ─────────────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 56px;
+  background: rgba(250, 247, 246, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--burgundy);
+  letter-spacing: 0.02em;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  transition: color 0.2s;
+}
+.nav-links a:hover {
+  color: var(--burgundy);
+  text-decoration: none;
+}
+
+/* ─── Shared Section Layout ───────────────────────────────────────── */
+section {
+  padding: 80px 0;
+}
+
+section:nth-child(even) {
+  background: var(--bg-alt);
+}
+
+.section-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-inner h2 {
+  font-size: 2rem;
+  color: var(--burgundy);
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--burg-pale);
+}
+
+/* ─── About ───────────────────────────────────────────────────────── */
+#about {
+  background: var(--bg);
+  padding: 100px 0 80px;
+}
+
+.about-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  gap: 3.5rem;
+  align-items: flex-start;
+}
+
+.about-photo {
+  flex-shrink: 0;
+}
+
+.profile-pic {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--burg-light);
+}
+
+.about-text h1 {
+  font-size: 2.8rem;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.affil {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--burg-mid);
+  margin-bottom: 1.4rem;
+}
+
+.bio {
+  color: var(--text-mid);
+  margin-bottom: 0.9rem;
+  font-size: 0.94rem;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+.links a {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: var(--burgundy);
+  transition: color 0.2s;
+}
+.links a:hover {
+  color: var(--burg-mid);
+  text-decoration: none;
+}
+
+/* ─── News ────────────────────────────────────────────────────────── */
+.news-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.news-list li {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.news-list li:first-child {
+  border-top: none;
+}
+
+.news-date {
+  flex-shrink: 0;
+  width: 72px;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--burg-mid);
+  font-weight: 400;
+  padding-top: 1px;
+}
+
+.news-item {
+  font-size: 0.92rem;
+  color: var(--text-mid);
+}
+
+/* ─── Publications ────────────────────────────────────────────────── */
+.pub-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1.1rem;
+  transition: box-shadow 0.2s;
+}
+
+.pub-card:hover {
+  box-shadow: 0 4px 20px rgba(122, 48, 64, 0.08);
+}
+
+.pub-venue {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--burg-mid);
+  margin-bottom: 0.35rem;
+}
+
+.pub-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.18rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+  line-height: 1.35;
+}
+
+.pub-authors {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 0.65rem;
+}
+
+.pub-links {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pub-links a {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--burg-light);
+  border-radius: 999px;
+  color: var(--burgundy);
+  background: var(--burg-faint);
+  transition: background 0.2s;
+}
+.pub-links a:hover {
+  background: var(--burg-pale);
+  text-decoration: none;
+}
+
+/* ─── Contact ─────────────────────────────────────────────────────── */
+.contact-inner {
+  text-align: center;
+}
+
+.contact-inner h2 {
+  border-bottom: none;
+  margin-bottom: 1rem;
+}
+
+.contact-inner p {
+  font-size: 0.94rem;
+  color: var(--text-mid);
+  max-width: 480px;
+  margin: 0 auto 0.8rem;
+}
+
+.email a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  color: var(--burgundy);
+  letter-spacing: 0.02em;
+}
+
+.office {
+  font-size: 0.82rem !important;
+  color: var(--text-light) !important;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.78rem;
+  color: var(--text-light);
+  letter-spacing: 0.04em;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .about-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .about-text h1 { font-size: 2.2rem; }
+
+  .links { justify-content: center; }
+
+  nav { padding: 0 1.2rem; }
+  .nav-links { gap: 1.2rem; }
+
+  .section-inner { padding: 0 1.2rem; }
+}
