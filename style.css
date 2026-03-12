@@ -50,7 +50,7 @@ nav {
   justify-content: space-between;
   padding: 0 2.5rem;
   height: 56px;
-  background: rgba(250, 247, 246, 0.92);
+  background: rgba(236, 218, 220, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
 }
@@ -161,7 +161,7 @@ section:nth-child(even) {
 
 .links a {
   display: inline-block;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   color: var(--burgundy);
   transition: color 0.2s;
 }
