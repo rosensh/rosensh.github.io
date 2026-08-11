@@ -176,6 +176,9 @@ section:nth-child(even) {
   display: flex;
   flex-direction: column;
   gap: 0;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
 .news-list li {
@@ -243,12 +246,23 @@ section:nth-child(even) {
   margin-bottom: 0.65rem;
 }
 
+.pub-tldr {
+  border-left: 2px solid var(--burg-light);
+  padding-left: 0.85rem;
+  margin: 0 0 0.7rem;
+  font-style: italic;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-mid);
+}
+
 .pub-links {
   display: flex;
   gap: 0.5rem;
 }
 
-.pub-links a {
+.pub-links a,
+.pub-links .pub-link-soon {
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
