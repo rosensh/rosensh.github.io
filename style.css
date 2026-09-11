@@ -40,6 +40,12 @@ a {
 }
 a:hover { text-decoration: underline; }
 
+a:focus-visible {
+  outline: 2px solid var(--burgundy);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 /* ─── Nav ─────────────────────────────────────────────────────────── */
 nav {
   position: sticky;
@@ -53,14 +59,6 @@ nav {
   background: rgba(236, 218, 220, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
-}
-
-.nav-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem;
-  font-weight: 500;
-  color: var(--burgundy);
-  letter-spacing: 0.02em;
 }
 
 .nav-links {
@@ -170,13 +168,23 @@ section:nth-child(even) {
   text-decoration: none;
 }
 
+.icon-alphaxiv {
+  display: inline-block;
+  width: 1.70rem;
+  height: 1.2rem;
+  vertical-align: 0;
+  background-color: currentColor;
+  -webkit-mask: url(alphaxiv.png) center / contain no-repeat;
+  mask: url(alphaxiv.png) center / contain no-repeat;
+}
+
 /* ─── News ────────────────────────────────────────────────────────── */
 .news-list {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 0;
-  max-height: 340px;
+  max-height: 520px;
   overflow-y: auto;
   padding-right: 0.5rem;
 }
@@ -261,8 +269,7 @@ section:nth-child(even) {
   gap: 0.5rem;
 }
 
-.pub-links a,
-.pub-links .pub-link-soon {
+.pub-links a {
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -276,35 +283,6 @@ section:nth-child(even) {
 .pub-links a:hover {
   background: var(--burg-pale);
   text-decoration: none;
-}
-
-/* ─── Contact ─────────────────────────────────────────────────────── */
-.contact-inner {
-  text-align: center;
-}
-
-.contact-inner h2 {
-  border-bottom: none;
-  margin-bottom: 1rem;
-}
-
-.contact-inner p {
-  font-size: 0.94rem;
-  color: var(--text-mid);
-  max-width: 480px;
-  margin: 0 auto 0.8rem;
-}
-
-.email a {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.4rem;
-  color: var(--burgundy);
-  letter-spacing: 0.02em;
-}
-
-.office {
-  font-size: 0.82rem !important;
-  color: var(--text-light) !important;
 }
 
 /* ─── Footer ──────────────────────────────────────────────────────── */
@@ -335,4 +313,12 @@ footer {
   .nav-links { gap: 1.2rem; }
 
   .section-inner { padding: 0 1.2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+  }
 }
