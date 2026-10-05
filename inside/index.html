@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INSIDE the Student's Mind | COLM 2026</title>
+  <meta name="description" content="INSIDE fine-tunes LLM student simulators to generate internal dialogue grounded in Bloom's Taxonomy before acting, so they model not only what students do but the reasoning that leads to it." />
+  <link rel="canonical" href="https://rosensh.github.io/inside/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="INSIDE the Student's Mind | COLM 2026" />
+  <meta property="og:description" content="Modeling the reasoning that leads to action makes student simulators more faithful and explainable." />
+  <meta property="og:url" content="https://rosensh.github.io/inside/" />
+  <meta property="og:image" content="https://rosensh.github.io/inside/teaser.png" />
+  <meta property="og:image:alt" content="INSIDE overview: a student's prior attempt and tutor feedback are turned into an internal dialogue, which conditions the next code submission" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../style.css?v=17" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="project-page">
+
+  <!-- NAV -->
+  <nav>
+    <a href="../" class="nav-home"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+    <ul class="nav-links">
+      <li><a href="#citation">Citation</a></li>
+    </ul>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="project-header">
+    <div class="project-venue">COLM &middot; 2026</div>
+    <h1 class="project-title">INSIDE the Student&rsquo;s Mind:</h1>
+    <p class="project-subtitle">Jointly Modeling Latent Reasoning and Action in LLM Student Simulators</p>
+    <p class="project-authors">
+      <strong>Rose Niousha</strong>, Minwoo Kang, Narges Norouzi
+    </p>
+    <p class="project-affil">University of California, Berkeley</p>
+    <div class="pub-links project-links">
+      <a href="https://arxiv.org/abs/2608.10492"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Paper</a>
+      <a href="https://github.com/rosensh/inside"><i class="fa-brands fa-github" aria-hidden="true"></i> Code</a>
+      <a href="#citation"><i class="fa-solid fa-quote-right" aria-hidden="true"></i> BibTeX</a>
+    </div>
+  </header>
+
+  <p class="project-tagline">
+    Modeling <em>the reasoning that leads to action</em> makes student simulators more faithful and explainable.
+  </p>
+
+  <!-- TEASER -->
+  <figure class="project-figure">
+    <img src="teaser.png" alt="INSIDE overview: a student's prior attempt and tutor feedback are turned into an internal dialogue, which conditions the next code submission" width="2734" height="1276" />
+    <figcaption>
+      Given a student's prior attempt, the AI tutor's feedback, and problem context, INSIDE first generates the
+      student's <em>internal dialogue</em>, then the next code submission. Here the student takes the feedback
+      literally and drops <code>add()</code>, but still misses that <code>f</code> should be a function.
+    </figcaption>
+  </figure>
+
+  <!-- ABSTRACT -->
+  <section id="abstract">
+    <div class="section-inner">
+      <h2>Abstract</h2>
+      <p class="project-text">
+        Large Language Model (LLM)-based simulators often reproduce observable actions but fail to capture the
+        underlying reasoning behind them. In education, where student simulation is increasingly used for various
+        applications such as evaluating tutoring systems, this gap is especially pronounced. Two students may submit
+        identical submissions for entirely different reasons. We present <span class="small-caps">Internal Student Dialogue</span>
+        (INSIDE), a student modeling framework that fine-tunes LLMs not only to act like students but also to
+        think like them. INSIDE generates internal dialogue grounded in Bloom&rsquo;s Taxonomy across cognitive, affective,
+        and action dimensions, and fine-tunes models on paired think traces and actions. We baseline against different
+        prompting frameworks and evaluate on two axes: fidelity of simulated actions and quality of generated internal
+        dialogue. Our evaluations show that INSIDE improves simulation fidelity in both action fidelity, matching code
+        generation of real students, and reasoning alignment, achieving the highest alignment across models up to 57.9%.
+      </p>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section id="method">
+    <div class="section-inner">
+      <h2>Method</h2>
+
+      <h3 class="sub-head"><span class="sub-num">1</span> Reconstructing latent reasoning</h3>
+      <p class="project-text">
+        We only observe what students <em>do</em>: attempt <em>t&minus;1</em>, the AI tutor's feedback, and attempt
+        <em>t</em>. GPT-5 works backward from these to reconstruct what the student was thinking, in two stages
+        grounded in Bloom's Taxonomy.
+      </p>
+      <figure class="result-figure">
+        <img src="reconstruction.png" alt="Two-stage reconstruction grounded in Bloom's Taxonomy. Observed: student attempt t-1 calls add(a, -b) and add(a, b); the AI tutor explains that f is assigned an integer but should be a function; attempt t replaces the calls with a + -b and a + b. Reconstructed by GPT-5 working backward: stage 1 infers the student state as cognitive, affective, and action tags; stage 2 writes the internal dialogue: Hmm, they said f should be a function, not the result, so maybe I should just remove add()." width="2238" height="1259" loading="lazy" />
+      </figure>
+      <ul class="takeaways">
+        <li><strong>Stage 1, student state:</strong> <code>&lt;cognitive&gt;</code> what the student understands or misunderstands, <code>&lt;affective&gt;</code> how they feel about it (confusion, frustration, confidence), and <code>&lt;action&gt;</code> the concrete programming step they take next.</li>
+        <li><strong>Stage 2, internal dialogue:</strong> the state becomes a short, messy, first-person <code>&lt;think&gt;</code> monologue. When the edit is wrong, the misconception drives it and feels obviously right to the student.</li>
+      </ul>
+
+      <h3 class="sub-head"><span class="sub-num">2</span> Data: submission&ndash;feedback streams</h3>
+      <p class="project-text">
+        We use real submission&ndash;feedback streams from an intro programming course at UC Berkeley (~900 students
+        per semester), covering the first five Python homework assignments. Students resubmit until all autograder
+        tests pass, and failing submissions from students who opted in also get natural-language feedback from an AI
+        tutor. Given the problem and up to 10 prior submissions with their feedback, the simulator predicts the
+        student's next attempt.
+      </p>
+      <p class="project-text">
+        We train on Spring 2025 (445 students, 6,911 submissions) and test on Spring 2024 (479 different students),
+        split two ways: <strong>familiar problems</strong> that also appear in training (5,262 submissions), and
+        <strong>new problems</strong> the model has never seen (1,054 submissions).
+      </p>
+      <figure class="result-figure">
+        <img src="data.png" alt="Submission-feedback stream from an intro programming course at UC Berkeley. Attempts 1, 2, and 3 each receive tutor feedback, and each later attempt is preceded by a reconstructed think trace. Given this context of problem, prior submissions, feedback, and think traces, the model predicts the internal dialogue and attempt t." width="2238" height="699" loading="lazy" />
+      </figure>
+
+      <div class="methods-grid" role="table" aria-label="Methods compared">
+        <div role="row" class="methods-row methods-head">
+          <div role="columnheader"></div>
+          <div role="columnheader">Action only</div>
+          <div role="columnheader">Think &rarr; action</div>
+        </div>
+        <div role="row" class="methods-row">
+          <div role="rowheader" class="methods-group">
+            Prompted
+            <span>instructed to &ldquo;act like a student&rdquo;</span>
+          </div>
+          <div role="cell" class="method">Prompting</div>
+          <div role="cell" class="method">CoT &middot; BloomCoT</div>
+        </div>
+        <div role="row" class="methods-row">
+          <div role="rowheader" class="methods-group">
+            Fine-tuned
+            <span>LoRA on real student data</span>
+          </div>
+          <div role="cell" class="method">SFT</div>
+          <div role="cell" class="method method-ours">INSIDE (ours)</div>
+        </div>
+      </div>
+      <p class="methods-note">All methods receive the problem, prior submissions, and tutor feedback.</p>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results">
+    <div class="section-inner">
+      <h2>Results</h2>
+
+      <h3 class="sub-head"><span class="sub-num">3</span> Action fidelity</h3>
+      <p class="project-text">
+        How close is the simulated action to the real one? For each code metric (pass rate, lines of code, AST
+        depth, AST width, PEP&nbsp;8 violations), we compute the Wasserstein distance <em>W</em><sub>1</sub> between
+        the distributions of real and simulated submissions, estimated with 500 bootstrap resamples. Lower is closer
+        to real students.
+      </p>
+      <div class="table-filters">
+        <div class="split-toggle" role="group" aria-label="Test split">
+          <button type="button" data-target="op" aria-pressed="true">Familiar problems</button>
+          <button type="button" data-target="np" aria-pressed="false">New problems</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter by model" hidden>
+          <span class="filter-label">Model</span>
+          <button type="button" class="chip" data-filter="model" data-value="q25" aria-pressed="true">Qwen2.5-7B</button>
+          <button type="button" class="chip" data-filter="model" data-value="q25c" aria-pressed="true">Qwen2.5-Coder-7B</button>
+          <button type="button" class="chip" data-filter="model" data-value="q3" aria-pressed="true">Qwen3-8B</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter by method" hidden>
+          <span class="filter-label">Method</span>
+          <button type="button" class="chip" data-filter="method" data-value="prompt" aria-pressed="true">Prompted</button>
+          <button type="button" class="chip" data-filter="method" data-value="cot" aria-pressed="true">+ CoT</button>
+          <button type="button" class="chip" data-filter="method" data-value="bloom" aria-pressed="true">+ BloomCoT</button>
+          <button type="button" class="chip" data-filter="method" data-value="sft" aria-pressed="true">SFT</button>
+          <button type="button" class="chip" data-filter="method" data-value="inside" aria-pressed="true">INSIDE</button>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter by metric" hidden>
+          <span class="filter-label">Metric</span>
+          <button type="button" class="chip" data-filter="col" data-value="0" aria-pressed="true">Pass rate</button>
+          <button type="button" class="chip" data-filter="col" data-value="1" aria-pressed="true">LOC</button>
+          <button type="button" class="chip" data-filter="col" data-value="2" aria-pressed="true">AST depth</button>
+          <button type="button" class="chip" data-filter="col" data-value="3" aria-pressed="true">AST width</button>
+          <button type="button" class="chip" data-filter="col" data-value="4" aria-pressed="true">PEP 8</button>
+          <button type="button" class="chip-reset" hidden>Reset</button>
+        </div>
+      </div>
+      <div class="table-wrap fidelity-panel" id="fid-op" data-split="op">
+        <table class="align-table fidelity-table">
+          <caption>Wasserstein distance to real students, familiar problems (lower is better). Bold marks the best value among the models shown.</caption>
+          <thead>
+            <tr><th scope="col">Model</th><th scope="col" data-col="0">Pass rate</th><th scope="col" data-col="1">LOC</th><th scope="col" data-col="2">AST depth</th><th scope="col" data-col="3">AST width</th><th scope="col" data-col="4">PEP 8</th></tr>
+          </thead>
+          <tbody data-method="prompt">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Prompted</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B-Instruct</th><td data-col="0" data-v="0.39">0.39</td><td data-col="1" data-v="0.71">0.71</td><td data-col="2" data-v="0.60">0.60</td><td data-col="3" data-v="0.98">0.98</td><td data-col="4" data-v="1.12">1.12</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B-Instruct</th><td data-col="0" data-v="0.46">0.46</td><td data-col="1" data-v="0.80">0.80</td><td data-col="2" data-v="0.68">0.68</td><td data-col="3" data-v="1.78">1.78</td><td data-col="4" data-v="1.13">1.13</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.44">0.44</td><td data-col="1" data-v="1.05">1.05</td><td data-col="2" data-v="0.54">0.54</td><td data-col="3" data-v="1.33">1.33</td><td data-col="4" data-v="1.38">1.38</td></tr>
+          </tbody>
+          <tbody data-method="cot">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Prompted + CoT</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B-Instruct</th><td data-col="0" data-v="0.38">0.38</td><td data-col="1" data-v="0.67">0.67</td><td data-col="2" data-v="0.60">0.60</td><td data-col="3" data-v="0.98">0.98</td><td data-col="4" data-v="1.16">1.16</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B-Instruct</th><td data-col="0" data-v="0.47">0.47</td><td data-col="1" data-v="0.93">0.93</td><td data-col="2" data-v="0.75">0.75</td><td data-col="3" data-v="1.50">1.50</td><td data-col="4" data-v="1.25">1.25</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.48">0.48</td><td data-col="1" data-v="1.08">1.08</td><td data-col="2" data-v="0.59">0.59</td><td data-col="3" data-v="1.46">1.46</td><td data-col="4" data-v="1.38">1.38</td></tr>
+          </tbody>
+          <tbody data-method="bloom">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Prompted + BloomCoT</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B-Instruct</th><td data-col="0" data-v="0.35">0.35</td><td data-col="1" data-v="0.67">0.67</td><td data-col="2" data-v="0.58">0.58</td><td data-col="3" data-v="0.90">0.90</td><td data-col="4" data-v="1.17">1.17</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B-Instruct</th><td data-col="0" data-v="0.43">0.43</td><td data-col="1" data-v="0.88">0.88</td><td data-col="2" data-v="0.71">0.71</td><td data-col="3" data-v="1.40">1.40</td><td data-col="4" data-v="1.19">1.19</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.47">0.47</td><td data-col="1" data-v="0.98">0.98</td><td data-col="2" data-v="0.54">0.54</td><td data-col="3" data-v="1.30">1.30</td><td data-col="4" data-v="1.37">1.37</td></tr>
+          </tbody>
+          <tbody data-method="sft">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Fine-tuned (SFT)</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B</th><td data-col="0" data-v="0.14">0.14</td><td data-col="1" data-v="0.29">0.29</td><td data-col="2" data-v="0.29">0.29</td><td data-col="3" data-v="0.52">0.52</td><td data-col="4" data-v="0.18">0.18</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B</th><td data-col="0" data-v="0.15">0.15</td><td data-col="1" data-v="0.29">0.29</td><td data-col="2" data-v="0.29">0.29</td><td data-col="3" data-v="0.51">0.51</td><td data-col="4" data-v="0.19">0.19</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.15">0.15</td><td data-col="1" data-v="0.28">0.28</td><td data-col="2" data-v="0.28">0.28</td><td data-col="3" data-v="0.55">0.55</td><td data-col="4" data-v="0.16"><strong>0.16</strong></td></tr>
+          </tbody>
+          <tbody class="ours-group" data-method="inside">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">INSIDE (ours)</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B</th><td data-col="0" data-v="0.05"><strong>0.05</strong></td><td data-col="1" data-v="0.26">0.26</td><td data-col="2" data-v="0.27">0.27</td><td data-col="3" data-v="0.39"><strong>0.39</strong></td><td data-col="4" data-v="0.18">0.18</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B</th><td data-col="0" data-v="0.05"><strong>0.05</strong></td><td data-col="1" data-v="0.21"><strong>0.21</strong></td><td data-col="2" data-v="0.21">0.21</td><td data-col="3" data-v="0.40">0.40</td><td data-col="4" data-v="0.16"><strong>0.16</strong></td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.05"><strong>0.05</strong></td><td data-col="1" data-v="0.28">0.28</td><td data-col="2" data-v="0.20"><strong>0.20</strong></td><td data-col="3" data-v="0.42">0.42</td><td data-col="4" data-v="0.21">0.21</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrap fidelity-panel" id="fid-np" data-split="np">
+        <table class="align-table fidelity-table">
+          <caption>Wasserstein distance to real students, new problems (lower is better). Bold marks the best value among the models shown.</caption>
+          <thead>
+            <tr><th scope="col">Model</th><th scope="col" data-col="0">Pass rate</th><th scope="col" data-col="1">LOC</th><th scope="col" data-col="2">AST depth</th><th scope="col" data-col="3">AST width</th><th scope="col" data-col="4">PEP 8</th></tr>
+          </thead>
+          <tbody data-method="prompt">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Prompted</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B-Instruct</th><td data-col="0" data-v="0.37">0.37</td><td data-col="1" data-v="0.86">0.86</td><td data-col="2" data-v="0.50">0.50</td><td data-col="3" data-v="1.05">1.05</td><td data-col="4" data-v="0.82">0.82</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B-Instruct</th><td data-col="0" data-v="0.45">0.45</td><td data-col="1" data-v="0.85">0.85</td><td data-col="2" data-v="0.52">0.52</td><td data-col="3" data-v="0.71">0.71</td><td data-col="4" data-v="1.01">1.01</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.45">0.45</td><td data-col="1" data-v="1.10">1.10</td><td data-col="2" data-v="0.61">0.61</td><td data-col="3" data-v="1.05">1.05</td><td data-col="4" data-v="1.13">1.13</td></tr>
+          </tbody>
+          <tbody data-method="cot">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Prompted + CoT</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B-Instruct</th><td data-col="0" data-v="0.36">0.36</td><td data-col="1" data-v="0.90">0.90</td><td data-col="2" data-v="0.52">0.52</td><td data-col="3" data-v="1.21">1.21</td><td data-col="4" data-v="1.00">1.00</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B-Instruct</th><td data-col="0" data-v="0.43">0.43</td><td data-col="1" data-v="0.81">0.81</td><td data-col="2" data-v="0.57">0.57</td><td data-col="3" data-v="0.85">0.85</td><td data-col="4" data-v="1.06">1.06</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.44">0.44</td><td data-col="1" data-v="1.06">1.06</td><td data-col="2" data-v="0.74">0.74</td><td data-col="3" data-v="1.37">1.37</td><td data-col="4" data-v="1.21">1.21</td></tr>
+          </tbody>
+          <tbody data-method="bloom">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Prompted + BloomCoT</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B-Instruct</th><td data-col="0" data-v="0.33">0.33</td><td data-col="1" data-v="0.84">0.84</td><td data-col="2" data-v="0.47">0.47</td><td data-col="3" data-v="0.96">0.96</td><td data-col="4" data-v="0.95">0.95</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B-Instruct</th><td data-col="0" data-v="0.41">0.41</td><td data-col="1" data-v="0.82">0.82</td><td data-col="2" data-v="0.58">0.58</td><td data-col="3" data-v="1.13">1.13</td><td data-col="4" data-v="0.92">0.92</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.42">0.42</td><td data-col="1" data-v="1.01">1.01</td><td data-col="2" data-v="0.68">0.68</td><td data-col="3" data-v="1.19">1.19</td><td data-col="4" data-v="1.18">1.18</td></tr>
+          </tbody>
+          <tbody data-method="sft">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">Fine-tuned (SFT)</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B</th><td data-col="0" data-v="0.01"><strong>0.01</strong></td><td data-col="1" data-v="0.20">0.20</td><td data-col="2" data-v="0.19">0.19</td><td data-col="3" data-v="0.28">0.28</td><td data-col="4" data-v="0.14">0.14</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B</th><td data-col="0" data-v="0.03">0.03</td><td data-col="1" data-v="0.35">0.35</td><td data-col="2" data-v="0.18">0.18</td><td data-col="3" data-v="0.39">0.39</td><td data-col="4" data-v="0.16">0.16</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.02">0.02</td><td data-col="1" data-v="0.23">0.23</td><td data-col="2" data-v="0.17"><strong>0.17</strong></td><td data-col="3" data-v="0.28">0.28</td><td data-col="4" data-v="0.12"><strong>0.12</strong></td></tr>
+          </tbody>
+          <tbody class="ours-group" data-method="inside">
+            <tr class="group-row"><th scope="rowgroup" colspan="6">INSIDE (ours)</th></tr>
+            <tr data-model="q25"><th scope="row">Qwen2.5-7B</th><td data-col="0" data-v="0.04">0.04</td><td data-col="1" data-v="0.16"><strong>0.16</strong></td><td data-col="2" data-v="0.22">0.22</td><td data-col="3" data-v="0.37">0.37</td><td data-col="4" data-v="0.18">0.18</td></tr>
+            <tr data-model="q25c"><th scope="row">Qwen2.5-Coder-7B</th><td data-col="0" data-v="0.05">0.05</td><td data-col="1" data-v="0.20">0.20</td><td data-col="2" data-v="0.18">0.18</td><td data-col="3" data-v="0.14"><strong>0.14</strong></td><td data-col="4" data-v="0.19">0.19</td></tr>
+            <tr data-model="q3"><th scope="row">Qwen3-8B</th><td data-col="0" data-v="0.04">0.04</td><td data-col="1" data-v="0.20">0.20</td><td data-col="2" data-v="0.19">0.19</td><td data-col="3" data-v="0.40">0.40</td><td data-col="4" data-v="0.18">0.18</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        See Table 1 in the <a href="https://arxiv.org/abs/2608.10492">paper</a> for the full table,
+        including GPT-5.
+      </p>
+      <ul class="takeaways">
+        <li><strong>Fine-tuning beats prompting by a wide margin:</strong> prompted models are far too competent. Structured BloomCoT prompting helps a little but still trails SFT.</li>
+        <li><strong>Familiar problems:</strong> INSIDE has the lowest (or tied lowest) distance on every metric, improving on plain SFT in both correctness and code style.</li>
+        <li><strong>New problems:</strong> SFT and INSIDE are comparable. More students pass here, and SFT already fits that well, leaving INSIDE less to correct.</li>
+      </ul>
+
+      <figure class="result-figure">
+        <img src="traj_op.png" alt="Paper Figure 2a: mean pass rate per submission step on a familiar problem (n = 968). Real students stay near 0 until a jump to about 0.6 at the final step. SFT models sit around 0.2 to 0.4 and INSIDE models around 0.1 to 0.2, both rising at the end; prompted models, with or without BloomCoT, stay around 0.5 to 1.0 throughout." width="2212" height="835" loading="lazy" />
+        <figcaption>Pass-rate trajectories on a familiar problem (n = 968). Top row: without CoT (SFT, prompting). Bottom row: with CoT (INSIDE, BloomCoT).</figcaption>
+      </figure>
+      <figure class="result-figure">
+        <img src="traj_np.png" alt="Paper Figure 2b: mean pass rate per submission step on a new problem (n = 695). Real students stay low until a jump near the final step; SFT and INSIDE models stay around 0.2 to 0.3 before rising, while prompted models stay around 0.6 to 1.0 throughout." width="2212" height="834" loading="lazy" />
+        <figcaption>Pass-rate trajectories on a new problem (n = 695).</figcaption>
+      </figure>
+      <ul class="takeaways">
+        <li><strong>Real students start low and jump near the end.</strong> Fine-tuned models follow this pattern, while prompted models stay at around 80% pass rate from the first attempt.</li>
+        <li><strong>Closest to students:</strong> on the familiar problem, the three INSIDE models have the lowest pass-rate error (MAE 0.094&ndash;0.113). On the new problem, Qwen2.5-Coder-7B-INSIDE is closest (0.162).</li>
+      </ul>
+
+      <h3 class="sub-head"><span class="sub-num">4</span> Reasoning alignment</h3>
+      <p class="project-text">
+        Does the generated reasoning explain the real edit? We split each generated <code>&lt;think&gt;</code> into
+        claims and use an LLM judge (GPT-5-mini) to check whether each one is reflected in the student's actual edit from attempt
+        <em>t&minus;1</em> to <em>t</em>. Alignment is the fraction of claims that are. For example, 3 of 5 claims
+        reflected gives 60%.
+      </p>
+      <p class="judge-check">
+        Judge check: 95.2% alignment on teacher traces &middot; 88% agreement with human labels (&kappa; = 0.754)
+      </p>
+
+      <div class="table-wrap">
+        <table class="align-table">
+          <caption>Reasoning alignment (%), prompted (BloomCoT) &rarr; INSIDE, same model family. Standard error is about 0.8 on familiar problems and 2.0&ndash;2.3 on new problems, which have fewer samples.</caption>
+          <thead>
+            <tr>
+              <th scope="col" rowspan="2">Model</th>
+              <th scope="colgroup" colspan="2">Familiar problems</th>
+              <th scope="colgroup" colspan="2">New problems</th>
+            </tr>
+            <tr>
+              <th scope="col">BloomCoT</th>
+              <th scope="col">INSIDE</th>
+              <th scope="col">BloomCoT</th>
+              <th scope="col">INSIDE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Qwen2.5-7B</th>
+              <td>49.6</td><td class="ours">51.8 <span class="delta">+2.2</span></td>
+              <td>55.1</td><td class="ours">56.9 <span class="delta">+1.8</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Qwen2.5-Coder-7B</th>
+              <td>46.0</td><td class="ours">49.2 <span class="delta">+3.2</span></td>
+              <td>51.3</td><td class="ours">55.5 <span class="delta">+4.2</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Qwen3-8B</th>
+              <td>47.9</td><td class="ours">50.5 <span class="delta">+2.6</span></td>
+              <td>56.0</td><td class="ours"><strong>57.9</strong> <span class="delta">+1.9</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        See Table 2 in the <a href="https://arxiv.org/abs/2608.10492">paper</a> for all models,
+        including GPT-5, Qwen3-14B, and Qwen3-32B.
+      </p>
+      <ul class="takeaways">
+        <li><strong>INSIDE raises alignment for every model:</strong> +2.2 to +3.2 points on familiar problems.</li>
+        <li><strong>Bigger prompted models don't help:</strong> on familiar problems, GPT-5 (45.5%) and Qwen3-32B (44.4%) score lowest. Stronger reasoning doesn't mean more student-like reasoning.</li>
+        <li><strong>Read alignment together with action fidelity:</strong> some prompted models come close on alignment but write unrealistic code. INSIDE is strong on both.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CITATION -->
+  <section id="citation">
+    <div class="section-inner">
+      <h2>Citation</h2>
+      <div class="bibtex">
+        <button type="button" class="bibtex-copy" aria-label="Copy BibTeX">
+          <i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span>
+        </button>
+<pre><code id="bibtex-text">@inproceedings{niousha2026inside,
+  title     = {{INSIDE} the Student's Mind: Jointly Modeling Latent Reasoning and Action in {LLM} Student Simulators},
+  author    = {Niousha, Rose and Kang, Minwoo and Norouzi, Narges},
+  booktitle = {Conference on Language Modeling (COLM)},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Rose Niousha</p>
+  </footer>
+
+  <script>
+    (function () {
+      var split = 'op';
+      var chips = document.querySelectorAll('.table-filters .chip');
+      var reset = document.querySelector('.chip-reset');
+
+      function selected(filter) {
+        var out = {};
+        chips.forEach(function (c) {
+          if (c.dataset.filter === filter && c.getAttribute('aria-pressed') === 'true') out[c.dataset.value] = true;
+        });
+        return out;
+      }
+
+      function update() {
+        var models = selected('model'), methods = selected('method'), cols = selected('col');
+        var nCols = Object.keys(cols).length;
+        document.querySelectorAll('.fidelity-panel').forEach(function (panel) {
+          panel.hidden = panel.dataset.split !== split;
+          panel.querySelectorAll('[data-col]').forEach(function (cell) { cell.hidden = !cols[cell.dataset.col]; });
+          panel.querySelectorAll('.group-row th').forEach(function (th) { th.colSpan = nCols + 1; });
+          var visible = [];
+          panel.querySelectorAll('tbody').forEach(function (tb) {
+            tb.hidden = !methods[tb.dataset.method];
+            tb.querySelectorAll('tr[data-model]').forEach(function (tr) {
+              tr.hidden = !models[tr.dataset.model];
+              if (!tb.hidden && !tr.hidden) visible.push(tr);
+            });
+          });
+          // bold the best (lowest) value among the rows shown
+          for (var c = 0; c < 5; c++) {
+            var cells = visible.map(function (tr) { return tr.querySelector('td[data-col="' + c + '"]'); });
+            var best = Math.min.apply(null, cells.map(function (td) { return +td.dataset.v; }));
+            panel.querySelectorAll('td[data-col="' + c + '"]').forEach(function (td) {
+              var isBest = cells.indexOf(td) !== -1 && +td.dataset.v === best;
+              td.innerHTML = isBest ? '<strong>' + td.dataset.v + '</strong>' : td.dataset.v;
+            });
+          }
+        });
+        var anyOff = Array.prototype.some.call(chips, function (c) { return c.getAttribute('aria-pressed') === 'false'; });
+        reset.hidden = !anyOff;
+      }
+
+      document.querySelectorAll('.split-toggle button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          split = btn.dataset.target;
+          document.querySelectorAll('.split-toggle button').forEach(function (b) {
+            b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+          });
+          update();
+        });
+      });
+
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          var on = chip.getAttribute('aria-pressed') === 'true';
+          // keep at least one option selected in each group
+          if (on && Object.keys(selected(chip.dataset.filter)).length === 1) return;
+          chip.setAttribute('aria-pressed', on ? 'false' : 'true');
+          update();
+        });
+      });
+
+      reset.addEventListener('click', function () {
+        chips.forEach(function (c) { c.setAttribute('aria-pressed', 'true'); });
+        update();
+      });
+
+      document.querySelectorAll('.filter-row').forEach(function (row) { row.hidden = false; });
+      update();
+    })();
+
+    document.querySelector('.bibtex-copy').addEventListener('click', function () {
+      var label = this.querySelector('span');
+      navigator.clipboard.writeText(document.getElementById('bibtex-text').textContent).then(function () {
+        label.textContent = 'Copied';
+        setTimeout(function () { label.textContent = 'Copy'; }, 1500);
+      });
+    });
+  </script>
+
+</body>
+</html>
