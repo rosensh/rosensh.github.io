@@ -14,7 +14,7 @@
   <meta property="og:image:alt" content="INSIDE overview: a student's prior attempt and tutor feedback are turned into an internal dialogue, which conditions the next code submission" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="../style.css?v=17" />
+  <link rel="stylesheet" href="../style.css?v=24" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet" />
@@ -75,6 +75,36 @@
         prompting frameworks and evaluate on two axes: fidelity of simulated actions and quality of generated internal
         dialogue. Our evaluations show that INSIDE improves simulation fidelity in both action fidelity, matching code
         generation of real students, and reasoning alignment, achieving the highest alignment across models up to 57.9%.
+      </p>
+    </div>
+  </section>
+
+  <!-- MOTIVATION -->
+  <section id="motivation">
+    <div class="section-inner">
+      <h2>Motivation</h2>
+      <p class="project-text">
+        In education, the reasoning behind a student's attempt is what matters for diagnosing misconceptions and
+        giving targeted feedback. Yet most LLM-based student simulators learn to copy what students <em>do</em>,
+        not <em>why</em>.
+      </p>
+      <div class="motivation-grid">
+        <div class="motivation-card">
+          <h4>Same answer, different reasoning</h4>
+          <p>Two students may reach the same solution, or the same wrong answer, for entirely different reasons. Observable actions give only a partial view of cognition.</p>
+        </div>
+        <div class="motivation-card">
+          <h4>Mistakes are part of learning</h4>
+          <p>Work on LLM reasoning mostly targets correctness. Students make errors, hold misconceptions, and apply incomplete strategies, and a simulator has to capture that.</p>
+        </div>
+        <div class="motivation-card">
+          <h4>Beyond the black box</h4>
+          <p>Prior simulators treat student behavior as a black box and only predict outcomes. A student model's key affordance is access to processes real students don't reveal.</p>
+        </div>
+      </div>
+      <p class="project-text">
+        INSIDE gives the simulator an explicit internal dialogue before each action, modeling how a student
+        thinks, not just what they do.
       </p>
     </div>
   </section>
