@@ -150,6 +150,16 @@ section:nth-child(even) {
   font-size: 0.94rem;
 }
 
+.bio a {
+  font-weight: 400;
+  text-decoration: underline;
+  text-decoration-color: var(--burg-light);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.2s;
+}
+.bio a:hover { text-decoration-color: var(--burgundy); }
+
 .links {
   display: flex;
   flex-wrap: wrap;
