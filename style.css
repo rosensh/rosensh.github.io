@@ -249,6 +249,12 @@ section:nth-child(even) {
   margin-bottom: 0.35rem;
 }
 
+.pub-venue-sub {
+  display: block;
+  margin-top: 0.15rem;
+  text-transform: none;
+}
+
 .pub-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.18rem;
