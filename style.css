@@ -29,7 +29,7 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Newsreader', serif;
   font-weight: 400;
   line-height: 1.2;
 }
@@ -137,9 +137,8 @@ section:nth-child(even) {
 }
 
 .affil {
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
   color: var(--burg-mid);
   margin-bottom: 1.4rem;
 }
@@ -256,7 +255,7 @@ section:nth-child(even) {
 }
 
 .pub-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Newsreader', serif;
   font-size: 1.18rem;
   font-weight: 500;
   color: var(--text);
@@ -351,15 +350,15 @@ section:nth-child(even) {
 
 .project-title,
 .project-subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Newsreader', serif;
   /* sized so the subtitle fits on one line on laptop-width screens */
   font-size: clamp(1.25rem, calc((100vw - 4rem) / 34), 2rem);
   font-weight: 500;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   line-height: 1.25;
   color: var(--text);
 }
-.project-page .project-title { font-weight: 600; margin-bottom: 0.2rem; }
+.project-page .project-title { font-family: 'Newsreader', serif; font-weight: 500; letter-spacing: 0; margin-bottom: 0.2rem; }
 .project-subtitle { font-weight: 400; }
 .project-title, .project-subtitle, .project-tagline { text-wrap: balance; }
 
@@ -483,7 +482,6 @@ code {
 .motivation-card {
   background: var(--white);
   border: 1px solid var(--border);
-  border-top: 3px solid var(--burg-light);
   border-radius: 10px;
   padding: 1.1rem 1.2rem;
 }
